@@ -22,62 +22,57 @@ for movieI in soupMovieList.find_all("a", {"class" : "unstyled articleLink", "ta
 rtUrl = "http://www.rottentomatoes.com"
 
 def GetMovieInfo(page_url):
-    
+    respMovieInfo = requests.get(url="%s/m/mad_max_fury_road/" %(rtUrl))
+    soupMovieInfo = BeautifulSoup(respMovieInfo.text, "lxml")
+
+    movieInfoA = soupMovieInfo.find("div", {"id" : "all-critics-numbers"})
+    movieInfoB = soupMovieInfo.find("div", {"class" : "panel panel-rt panel-box movie_info media"})
 
 
-respMovieInfo = requests.get(url="%s/m/mad_max_fury_road/" %(rtUrl))
-soupMovieInfo = BeautifulSoup(respMovieInfo.text, "lxml")
+    movie_Name      = soupMovieInfo.find("h1", {"class" : "title hidden-xs"}).contents[0][1:-1]
+    movie_In_Thea   = movieInfoB.find("td", {"itemprop" : "datePublished"}).contents[0][1:-1]
+    movie_Directed  = movieInfoB.find("td", {"itemprop" : "director"}).span.string
+    movie_runT      = movieInfoB.find("time", {"itemprop" : "duration"}).contents[0][1:-1]
+    movie_company   = movieInfoB.find("span", {"itemprop" : "productionCompany"}).contents[0]
+    movie_info_txt  = movieInfoB.find("div", {"id" : "movieSynopsis"}).contents[0][1:-1]
+    movie_tomatomer = movieInfoA.find("div", {"class" : "superPageFontColor"}).contents[2][1:-1]
 
-movieInfoA = soupMovieInfo.find("div", {"id" : "all-critics-numbers"})
-movieInfoB = soupMovieInfo.find("div", {"class" : "panel panel-rt panel-box movie_info media"})
-
-
-movie_Name      = soupMovieInfo.find("h1", {"class" : "title hidden-xs"}).contents[0][1:-1]
-movie_In_Thea   = movieInfoB.find("td", {"itemprop" : "datePublished"}).contents[0][1:-1]
-movie_Directed  = movieInfoB.find("td", {"itemprop" : "director"}).span.string
-movie_runT      = movieInfoB.find("time", {"itemprop" : "duration"}).contents[0][1:-1]
-movie_company   = movieInfoB.find("span", {"itemprop" : "productionCompany"}).contents[0]
-movie_info_txt  = movieInfoB.find("div", {"id" : "movieSynopsis"}).contents[0][1:-1]
-movie_tomatomer = movieInfoA.find("div", {"class" : "superPageFontColor"}).contents[2][1:-1]
-
-print('QQ\n\n')
-print(movie_Name)
-print(movie_In_Thea)
-print(movie_Directed)
-print(movie_runT)
-print(movie_company)
-print(movie_info_txt)
-print(movie_tomatomer)
+    print('QQ\n\n')
+    print(movie_Name)
+    print(movie_In_Thea)
+    print(movie_Directed)
+    print(movie_runT)
+    print(movie_company)
+    print(movie_info_txt)
+    print(movie_tomatomer)
 
 
 
+def GetReviewers(urlR):
+    resp = requests.get(url="http://www.rottentomatoes.com/m/%s/reviews/?page=1&type=user&sort=" %("mad_max_fury_road"))
+    soup = BeautifulSoup(resp.text, "lxml")
+
+    for tag in soup.find_all("div",{"class" : "row review_table_row"}):
+        # tag.find
+        # push_tag = tag.find("div","scoreWapper")
+        userIDnum  = tag.a['href']
+        userID     = tag.find("a", "bold unstyled articleLink").string
+        content    = tag.find("div","user_review").contents[2]
+        contentLen = len(content)
+        ratingStar = tag.find("div","user_review").span['class'][0]
+        time = tag.find("span", "fr small subtle").string
+        # s_reviewer = 
 
 
-
-# resp = requests.get(url="http://www.rottentomatoes.com/m/%s/reviews/?page=1&type=user&sort=" %("mad_max_fury_road"))
-# soup = BeautifulSoup(resp.text, "lxml")
-
-# for tag in soup.find_all("div",{"class" : "row review_table_row"}):
-#     # tag.find
-#     # push_tag = tag.find("div","scoreWapper")
-#     userIDnum  = tag.a['href']
-#     userID     = tag.find("a", "bold unstyled articleLink").string
-#     content    = tag.find("div","user_review").contents[2]
-#     contentLen = len(content)
-#     ratingStar = tag.find("div","user_review").span['class'][0]
-#     time = tag.find("span", "fr small subtle").string
-#     # s_reviewer = 
-
-
-#     print("\n")
-#     print(userIDnum)
-#     print(userID)
-#     print(content)
-#     print(contentLen)
-#     print(ratingStar)
-#     print(time)
-#     # print(push_tag)
-#     break
+        print("\n")
+        print(userIDnum)
+        print(userID)
+        print(content)
+        print(contentLen)
+        print(ratingStar)
+        print(time)
+        # print(push_tag)
+        break
 
 
 
